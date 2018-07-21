@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.annotation.PostConstruct;
+import java.sql.SQLException;
 import java.util.TimeZone;
 
 @SpringBootApplication
@@ -17,7 +18,9 @@ public class Application {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws SQLException {
         SpringApplication.run(Application.class, args);
+
     }
 }
