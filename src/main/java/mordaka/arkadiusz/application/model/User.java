@@ -68,8 +68,22 @@ public class User extends DateAudit {
     @NotBlank
     private String city;
 
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
+    private Set<Item> items = new HashSet<>();
 
-    public User() {
+    @OneToMany(mappedBy = "teacher",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
+    private Set<Item> carriedItems = new HashSet<>();
+
+    private User() {
     }
 
 
