@@ -15,4 +15,4 @@ INSERT INTO user_roles(user_id, role_id) VALUES ('3', '3');
 --jdbc:h2:mem:testdb
 --root: sa / password:
 
-INSERT INTO carried_items(id, grade, subject_name, student_id, teacher_id) VALUES (null, '5', 'Matematyka', '1', '3');
+INSERT INTO items(id, grade, subject_name, student_id, teacher_id) VALUES (null, '5', 'Matematyka', '1', '3');

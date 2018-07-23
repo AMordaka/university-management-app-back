@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Data
-@Table(name = "carriedItems")
+@Table(name = "Items")
 public class Item {
 
     @Id
