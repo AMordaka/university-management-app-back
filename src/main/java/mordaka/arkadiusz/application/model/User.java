@@ -32,8 +32,13 @@ public class User extends DateAudit {
     private String name;
 
     @NotBlank
-    @Size(max = 15)
+    @Size(max = 40)
+    private String surname;
+
+    @NotBlank
+    @Size(max = 10)
     private String username;
+
 
     @NaturalId
     @NotBlank
@@ -51,15 +56,32 @@ public class User extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @NotBlank
+    private String street;
+
+    @NotBlank
+    private String numberStreet;
+
+    @NotBlank
+    private String postalCode;
+
+    @NotBlank
+    private String city;
+
 
     public User() {
     }
 
-    public User(String name, String username, String email, String password) {
+
+    public User(String name, String surname, String username, String email, String password, String street, String numberStreet, String postalCode, String city) {
         this.name = name;
+        this.surname = surname;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.street = street;
+        this.numberStreet = numberStreet;
+        this.postalCode = postalCode;
+        this.city = city;
     }
-
 }

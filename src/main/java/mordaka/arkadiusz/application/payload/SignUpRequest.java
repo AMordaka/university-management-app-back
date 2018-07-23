@@ -1,34 +1,42 @@
 package mordaka.arkadiusz.application.payload;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.*;
 
+@Data
 public class SignUpRequest {
     @NotBlank
     @Size(min = 4, max = 40)
-    @Getter
-    @Setter
     private String name;
 
     @NotBlank
-    @Size(min = 3, max = 15)
-    @Getter
-    @Setter
+    @Size(min = 3, max = 40)
+    private String surname;
+
+    @NotBlank
+    @Pattern(regexp = "^(\\d{4,10})")
     private String username;
 
     @NotBlank
     @Size(max = 40)
     @Email
-    @Getter
-    @Setter
     private String email;
 
     @NotBlank
     @Size(min = 6, max = 20)
-    @Getter
-    @Setter
     private String password;
 
+    @NotBlank
+    private String street;
+
+    @NotBlank
+    private String numberStreet;
+
+    @NotBlank
+    @Pattern(regexp = "^(\\d{2}-\\d{3})")
+    private String postalCode;
+
+    @NotBlank
+    private String city;
 }
