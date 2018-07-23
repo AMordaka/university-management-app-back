@@ -1,6 +1,7 @@
 package mordaka.arkadiusz.application.model;
 
 import lombok.Data;
+import mordaka.arkadiusz.application.model.audit.DateAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -9,7 +10,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Data
 @Table(name = "Items")
-public class Item {
+public class Item extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,6 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "teacher_id", nullable = false)
     private User teacher;
-
 
     private Item() {
     }

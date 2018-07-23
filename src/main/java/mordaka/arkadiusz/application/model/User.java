@@ -23,6 +23,7 @@ import java.util.Set;
         })
 })
 public class User extends DateAudit {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -85,7 +86,6 @@ public class User extends DateAudit {
 
     private User() {
     }
-
 
     public User(String name, String surname, String username, String email, String password, String street, String numberStreet, String postalCode, String city) {
         this.name = name;
