@@ -3,6 +3,7 @@ package mordaka.arkadiusz.application.service;
 import mordaka.arkadiusz.application.payload.JwtAuthenticationResponse;
 import mordaka.arkadiusz.application.payload.LoginRequest;
 import mordaka.arkadiusz.application.payload.SignUpRequest;
+import mordaka.arkadiusz.application.payload.UserProfile;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -10,4 +11,6 @@ public interface UserService {
     JwtAuthenticationResponse authenticateUser(LoginRequest request);
 
     ResponseEntity<?> registerUser(SignUpRequest signUpRequest);
+
+    UserProfile getUserProfile(String username);
 }

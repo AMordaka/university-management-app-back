@@ -1,13 +1,11 @@
 package mordaka.arkadiusz.application.service.impl;
 
 import mordaka.arkadiusz.application.exception.AppException;
+import mordaka.arkadiusz.application.exception.ResourceNotFoundException;
 import mordaka.arkadiusz.application.model.Role;
 import mordaka.arkadiusz.application.model.RoleName;
 import mordaka.arkadiusz.application.model.User;
-import mordaka.arkadiusz.application.payload.ApiResponse;
-import mordaka.arkadiusz.application.payload.JwtAuthenticationResponse;
-import mordaka.arkadiusz.application.payload.LoginRequest;
-import mordaka.arkadiusz.application.payload.SignUpRequest;
+import mordaka.arkadiusz.application.payload.*;
 import mordaka.arkadiusz.application.repository.RoleRepository;
 import mordaka.arkadiusz.application.repository.UserRepository;
 import mordaka.arkadiusz.application.security.JwtTokenProvider;
@@ -25,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -80,5 +79,15 @@ public class UserServiceImpl implements UserService {
                 .buildAndExpand(result.getUsername()).toUri();
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+    }
+
+    @Override
+    public UserProfile getUserProfile(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+
+        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt());
+
+        return userProfile;
     }
 }

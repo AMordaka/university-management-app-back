@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -84,7 +85,7 @@ public class User extends DateAudit {
     )
     private Set<Item> carriedItems = new HashSet<>();
 
-    private User() {
+    public User() {
     }
 
     public User(String name, String surname, String username, String email, String password, String street, String numberStreet, String postalCode, String city) {
@@ -97,5 +98,29 @@ public class User extends DateAudit {
         this.numberStreet = numberStreet;
         this.postalCode = postalCode;
         this.city = city;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(surname, user.surname) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(roles, user.roles) &&
+                Objects.equals(street, user.street) &&
+                Objects.equals(numberStreet, user.numberStreet) &&
+                Objects.equals(postalCode, user.postalCode) &&
+                Objects.equals(city, user.city);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, name, surname, username, email, password, roles, street, numberStreet, postalCode, city);
     }
 }
