@@ -25,6 +25,6 @@ public class Teacher {
     )
     List<Item> carriedItems = new ArrayList<>();
 
-    private Teacher() {
+    public Teacher() {
     }
 }

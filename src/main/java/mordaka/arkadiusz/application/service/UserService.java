@@ -9,11 +9,13 @@ public interface UserService {
 
     JwtAuthenticationResponse authenticateUser(LoginRequest request);
 
-    ResponseEntity<?> registerUser(SignUpRequest signUpRequest);
+    ResponseEntity<?> registerStudent(SignUpRequest signUpRequest);
 
     UserProfile getUserProfile(String username);
 
     List<ItemProfile> getParticipatesItems(String username);
 
     List<ItemProfile> getCarriedItems(String username);
+
+    ResponseEntity<?> registerTeacher(SignUpRequest signUpRequest);
 }
