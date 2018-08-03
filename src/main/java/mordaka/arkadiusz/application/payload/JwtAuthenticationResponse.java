@@ -3,13 +3,11 @@ package mordaka.arkadiusz.application.payload;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class JwtAuthenticationResponse {
-    @Getter
-    @Setter
-    private String accessToken;
 
-    @Getter
-    @Setter
+    private String accessToken;
     private String tokenType = "Bearer";
 
     public JwtAuthenticationResponse(String accessToken) {

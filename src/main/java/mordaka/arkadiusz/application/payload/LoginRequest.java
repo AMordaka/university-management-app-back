@@ -5,15 +5,14 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+@Getter
+@Setter
 public class LoginRequest {
+
     @NotBlank
-    @Getter
-    @Setter
     private String usernameOrEmail;
 
     @NotBlank
-    @Getter
-    @Setter
     private String password;
 
 }

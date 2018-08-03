@@ -3,12 +3,11 @@ package mordaka.arkadiusz.application.payload;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class ApiResponse {
-    @Getter
-    @Setter
+
     private Boolean success;
-    @Getter
-    @Setter
     private String message;
 
     public ApiResponse(Boolean success, String message) {
