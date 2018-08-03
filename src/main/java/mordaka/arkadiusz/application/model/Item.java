@@ -1,16 +1,16 @@
 package mordaka.arkadiusz.application.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import mordaka.arkadiusz.application.model.audit.DateAudit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 @Entity
-@Data
-@Table(name = "Items")
+@Getter
+@Setter
 public class Item extends DateAudit {
 
     @Id
@@ -25,30 +25,14 @@ public class Item extends DateAudit {
     private String grade;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "student_id", nullable = false)
-    private User student;
+    @JoinColumn(name = "student_id")
+    private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private User teacher;
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     private Item() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id) &&
-                Objects.equals(subjectName, item.subjectName) &&
-                Objects.equals(grade, item.grade);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(super.hashCode(), id, subjectName, grade);
-    }
 }
