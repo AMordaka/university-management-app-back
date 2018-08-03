@@ -2,9 +2,7 @@ package mordaka.arkadiusz.application.service.impl;
 
 import mordaka.arkadiusz.application.exception.AppException;
 import mordaka.arkadiusz.application.exception.ResourceNotFoundException;
-import mordaka.arkadiusz.application.model.Role;
-import mordaka.arkadiusz.application.model.RoleName;
-import mordaka.arkadiusz.application.model.User;
+import mordaka.arkadiusz.application.model.*;
 import mordaka.arkadiusz.application.payload.*;
 import mordaka.arkadiusz.application.repository.RoleRepository;
 import mordaka.arkadiusz.application.repository.UserRepository;
@@ -22,17 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     AuthenticationManager authenticationManager;
-
-    @Autowired
-    JwtTokenProvider tokenProvider;
 
     @Autowired
     UserRepository userRepository;
@@ -43,20 +39,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    JwtTokenProvider tokenProvider;
 
-    @Override
-    public JwtAuthenticationResponse authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
-                        loginRequest.getPassword()
-                )
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
-        return new JwtAuthenticationResponse(jwt);
-    }
 
     @Override
     public ResponseEntity<?> registerUser(SignUpRequest signUpRequest) {
@@ -66,9 +51,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
         }
-        // Creating user's account
+        Student student = new Student();
         User user = new User(signUpRequest.getName(), signUpRequest.getSurname(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(),
                 signUpRequest.getStreet(), signUpRequest.getNumberStreet(), signUpRequest.getPostalCode(), signUpRequest.getCity());
+        user.setStudent(student);
+        student.setUser(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new AppException("User Role not set."));
@@ -82,12 +69,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public JwtAuthenticationResponse authenticateUser(LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsernameOrEmail(),
+                        request.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = tokenProvider.generateToken(authentication);
+        return new JwtAuthenticationResponse(jwt);
+    }
+
+
+    @Override
     public UserProfile getUserProfile(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = findUser(username);
+        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt());
+    }
+
+    @Override
+    public List<ItemProfile> getParticipatesItems(String username) {
+        User user = findUser(username);
+        List<ItemProfile> itemProfiles = new ArrayList<>();
+        for (Item item : user.getStudent().getItems()) {
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName()));
+        }
+        return itemProfiles;
+    }
+
+    @Override
+    public List<ItemProfile> getCarriedItems(String username) {
+        User user = findUser(username);
+        List<ItemProfile> itemProfiles = new ArrayList<>();
+        for (Item item : user.getTeacher().getCarriedItems()) {
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName()));
+        }
+        return itemProfiles;
+    }
+
+    private User findUser(String username) {
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
-
-        UserProfile userProfile = new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt());
-
-        return userProfile;
     }
 }

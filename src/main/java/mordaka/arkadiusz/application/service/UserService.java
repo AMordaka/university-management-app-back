@@ -1,10 +1,9 @@
 package mordaka.arkadiusz.application.service;
 
-import mordaka.arkadiusz.application.payload.JwtAuthenticationResponse;
-import mordaka.arkadiusz.application.payload.LoginRequest;
-import mordaka.arkadiusz.application.payload.SignUpRequest;
-import mordaka.arkadiusz.application.payload.UserProfile;
+import mordaka.arkadiusz.application.payload.*;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -13,4 +12,8 @@ public interface UserService {
     ResponseEntity<?> registerUser(SignUpRequest signUpRequest);
 
     UserProfile getUserProfile(String username);
+
+    List<ItemProfile> getParticipatesItems(String username);
+
+    List<ItemProfile> getCarriedItems(String username);
 }
