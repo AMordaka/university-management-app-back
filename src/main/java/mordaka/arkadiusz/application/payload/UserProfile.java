@@ -5,20 +5,13 @@ import lombok.Setter;
 
 import java.time.Instant;
 
-
+@Getter
+@Setter
 public class UserProfile {
 
-    @Getter
-    @Setter
     private Long id;
-    @Getter
-    @Setter
     private String username;
-    @Getter
-    @Setter
     private String name;
-    @Getter
-    @Setter
     private Instant joinedAt;
 
     public UserProfile(Long id, String username, String name, Instant joinedAt) {
