@@ -27,21 +27,19 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtTokenProvider tokenProvider;
-
+    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+    }
 
     @Override
     public ResponseEntity<?> registerStudent(SignUpRequest signUpRequest) {
@@ -118,7 +116,7 @@ public class UserServiceImpl implements UserService {
         User user = findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getStudent().getItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName()));
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname()));
         }
         return itemProfiles;
     }
@@ -128,7 +126,7 @@ public class UserServiceImpl implements UserService {
         User user = findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getTeacher().getCarriedItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName()));
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname()));
         }
         return itemProfiles;
     }
