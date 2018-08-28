@@ -30,4 +30,10 @@ public class UserController {
     public List<ItemProfile> getCarriedItems(@PathVariable(value = "username") String username) {
         return userService.getCarriedItems(username);
     }
+
+    @GetMapping("/users")
+    public List<UserProfile> getUsers() {
+        return userService.getAllUsers();
+    }
+
 }

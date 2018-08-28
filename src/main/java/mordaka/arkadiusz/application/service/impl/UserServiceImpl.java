@@ -23,6 +23,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -92,6 +93,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserProfile> getAllUsers() {
+        List<UserProfile> userProfiles = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            userProfiles.add(new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt()));
+        }
+        return userProfiles;
+    }
+
+    @Override
     public JwtAuthenticationResponse authenticateUser(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -101,7 +111,8 @@ public class UserServiceImpl implements UserService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
-        return new JwtAuthenticationResponse(jwt);
+        Optional<User> user = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail());
+        return new JwtAuthenticationResponse(jwt, user.get().getName(), user.get().getSurname());
     }
 
 

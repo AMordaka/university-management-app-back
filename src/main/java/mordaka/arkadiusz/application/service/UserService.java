@@ -18,4 +18,6 @@ public interface UserService {
     List<ItemProfile> getCarriedItems(String username);
 
     ResponseEntity<?> registerTeacher(SignUpRequest signUpRequest);
+
+    List<UserProfile> getAllUsers();
 }
