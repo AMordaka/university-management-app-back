@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         user.setStudent(student);
         student.setUser(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+        Role userRole = roleRepository.findByName(RoleName.ROLE_STUDENT)
                 .orElseThrow(() -> new AppException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
         User result = userRepository.save(user);
