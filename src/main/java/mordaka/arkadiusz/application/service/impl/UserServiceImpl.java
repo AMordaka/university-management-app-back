@@ -111,8 +111,9 @@ public class UserServiceImpl implements UserService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
-        Optional<User> user = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail());
-        return new JwtAuthenticationResponse(jwt, user.get().getName(), user.get().getSurname());
+        Optional<User> userOptional = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail());
+        User user = userOptional.orElse(new User());
+        return new JwtAuthenticationResponse(jwt, user.getName(), user.getSurname(),user.getRoles());
     }
 
 
