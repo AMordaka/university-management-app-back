@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
     public List<UserProfile> getAllUsers() {
         List<UserProfile> userProfiles = new ArrayList<>();
         for (User user : userRepository.findAll()) {
-            userProfiles.add(new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt()));
+            userProfiles.add(new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getCreatedAt(), user.getRoles()));
         }
         return userProfiles;
     }
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfile getUserProfile(String username) {
         User user = findUser(username);
-        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getCreatedAt());
+        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getCreatedAt(), user.getRoles());
     }
 
     @Override
