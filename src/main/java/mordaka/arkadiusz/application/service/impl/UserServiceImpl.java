@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         User user = findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getStudent().getItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname()));
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname(), item.getTeacher().getUser().getId()));
         }
         return itemProfiles;
     }
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         User user = findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getTeacher().getCarriedItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname()));
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getId()));
         }
         return itemProfiles;
     }
