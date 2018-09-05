@@ -8,7 +8,6 @@ import mordaka.arkadiusz.application.repository.RoleRepository;
 import mordaka.arkadiusz.application.repository.UserRepository;
 import mordaka.arkadiusz.application.security.JwtTokenProvider;
 import mordaka.arkadiusz.application.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -96,9 +95,15 @@ public class UserServiceImpl implements UserService {
     public List<UserProfile> getAllUsers() {
         List<UserProfile> userProfiles = new ArrayList<>();
         for (User user : userRepository.findAll()) {
-            userProfiles.add(new UserProfile(user.getId(),user.getUsername(),user.getName(),user.getSurname(),user.getEmail(),user.getPassword(),user.getCreatedAt(),user.getUpdatedAt(),user.getStreet(),user.getNumberStreet(),user.getPostalCode(),user.getCity(),user.getRoles()));
+            userProfiles.add(new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getCreatedAt(), user.getUpdatedAt(), user.getStreet(), user.getNumberStreet(), user.getPostalCode(), user.getCity(), user.getRoles()));
         }
         return userProfiles;
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUserById(Long id) {
+        userRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Override
@@ -113,37 +118,18 @@ public class UserServiceImpl implements UserService {
         String jwt = tokenProvider.generateToken(authentication);
         Optional<User> userOptional = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail());
         User user = userOptional.orElse(new User());
-        return new JwtAuthenticationResponse(jwt, user.getName(), user.getSurname(),user.getRoles());
+        return new JwtAuthenticationResponse(jwt, user.getName(), user.getSurname(), user.getRoles());
     }
 
 
     @Override
     public UserProfile getUserProfile(String username) {
         User user = findUser(username);
-        return new UserProfile(user.getId(),user.getUsername(),user.getName(),user.getSurname(),user.getEmail(),user.getPassword(),user.getCreatedAt(),user.getUpdatedAt(),user.getStreet(),user.getNumberStreet(),user.getPostalCode(),user.getCity(),user.getRoles());
+        return new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getCreatedAt(), user.getUpdatedAt(), user.getStreet(), user.getNumberStreet(), user.getPostalCode(), user.getCity(), user.getRoles());
     }
 
     @Override
-    public List<ItemProfile> getParticipatesItems(String username) {
-        User user = findUser(username);
-        List<ItemProfile> itemProfiles = new ArrayList<>();
-        for (Item item : user.getStudent().getItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname(), item.getTeacher().getUser().getId()));
-        }
-        return itemProfiles;
-    }
-
-    @Override
-    public List<ItemProfile> getCarriedItems(String username) {
-        User user = findUser(username);
-        List<ItemProfile> itemProfiles = new ArrayList<>();
-        for (Item item : user.getTeacher().getCarriedItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getId()));
-        }
-        return itemProfiles;
-    }
-
-    private User findUser(String username) {
+    public User findUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
     }

@@ -3,7 +3,6 @@ package mordaka.arkadiusz.application.controller;
 import mordaka.arkadiusz.application.payload.LoginRequest;
 import mordaka.arkadiusz.application.payload.SignUpRequest;
 import mordaka.arkadiusz.application.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +15,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -26,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerStudent(@Valid @RequestBody SignUpRequest signUpRequest) {
-       return userService.registerStudent(signUpRequest);
+        return userService.registerStudent(signUpRequest);
     }
 
     @PostMapping("/signupTeacher")

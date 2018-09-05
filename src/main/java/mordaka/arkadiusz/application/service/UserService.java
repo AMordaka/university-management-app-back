@@ -1,5 +1,6 @@
 package mordaka.arkadiusz.application.service;
 
+import mordaka.arkadiusz.application.model.User;
 import mordaka.arkadiusz.application.payload.*;
 import org.springframework.http.ResponseEntity;
 
@@ -13,11 +14,11 @@ public interface UserService {
 
     UserProfile getUserProfile(String username);
 
-    List<ItemProfile> getParticipatesItems(String username);
-
-    List<ItemProfile> getCarriedItems(String username);
-
     ResponseEntity<?> registerTeacher(SignUpRequest signUpRequest);
 
     List<UserProfile> getAllUsers();
+
+    ResponseEntity<Void>  deleteUserById(Long id);
+
+    User findUser(String username);
 }
