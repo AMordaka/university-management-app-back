@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         String jwt = tokenProvider.generateToken(authentication);
         Optional<User> userOptional = userRepository.findByUsernameOrEmail(request.getUsernameOrEmail(), request.getUsernameOrEmail());
         User user = userOptional.orElse(new User());
-        return new JwtAuthenticationResponse(jwt, user.getName(), user.getSurname(), user.getRoles());
+        return new JwtAuthenticationResponse(jwt, user.getName(), user.getSurname(), user.getRoles(), user.getUsername());
     }
 
 
