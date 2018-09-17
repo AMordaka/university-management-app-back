@@ -11,13 +11,13 @@ public class ItemProfile {
     private String subjectName;
     private String grade;
     private String name;
-    private Long idUser;
+    private String username;
 
-    public ItemProfile(Long id, String subjectName, String grade, String name, Long idUser) {
+    public ItemProfile(Long id, String subjectName, String grade, String name, String username) {
         this.id = id;
         this.subjectName = subjectName;
         this.grade = grade;
         this.name = name;
-        this.idUser = idUser;
+        this.username = username;
     }
 }

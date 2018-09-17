@@ -24,7 +24,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getStudent().getItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname(), item.getTeacher().getUser().getId()));
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname(), item.getTeacher().getUser().getUsername()));
         }
         return itemProfiles;
     }
@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getTeacher().getCarriedItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getId()));
+            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getUsername()));
         }
         return itemProfiles;
     }
