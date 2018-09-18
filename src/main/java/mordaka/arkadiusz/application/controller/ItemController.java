@@ -2,9 +2,8 @@ package mordaka.arkadiusz.application.controller;
 
 import mordaka.arkadiusz.application.payload.ItemProfile;
 import mordaka.arkadiusz.application.service.ItemService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,4 +25,10 @@ public class ItemController {
     public List<ItemProfile> getCarriedItems(@PathVariable(value = "username") String username) {
         return itemService.getCarriedItems(username);
     }
+
+    @PostMapping("/{course}/putGrade")
+    public ResponseEntity<?> putGrade(@PathVariable(value = "course") Long courseId, @RequestBody String studentUsername, @RequestBody String teacherUsername, @RequestBody String grade) {
+        return itemService.putGrade(courseId, studentUsername, teacherUsername, grade);
+    }
+
 }
