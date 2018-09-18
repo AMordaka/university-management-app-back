@@ -37,4 +37,9 @@ public class ItemController {
         return itemService.addCourse(courseName, teacherUsername);
     }
 
+    @GetMapping("/teacher/{username}/item/")
+    public List<ItemProfile> getCarriedItem(@PathVariable(value = "username") String username, @RequestBody String courseName) {
+        return itemService.getCarriedItem(courseName, username);
+    }
+
 }
