@@ -43,7 +43,11 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getTeacher().getCarriedItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getUsername()));
+            if (item.getStudent() != null) {
+                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getUsername()));
+            } else {
+                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), "", ""));
+            }
         }
         return itemProfiles;
     }
