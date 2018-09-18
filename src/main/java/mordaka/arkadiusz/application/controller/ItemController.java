@@ -32,8 +32,8 @@ public class ItemController {
         return itemService.putGrade(courseId, courseInfo);
     }
 
-    @PostMapping("createCourse/{course}/{username}")
-    public ResponseEntity<?> createCourse(@PathVariable(value = "course") String courseName, @PathVariable(value = "username") String teacherUsername) {
+    @PostMapping("/teacher/{username}")
+    public ResponseEntity<?> createCourse(@PathVariable(value = "username") String teacherUsername, @RequestBody String courseName) {
         return itemService.addCourse(courseName, teacherUsername);
     }
 
