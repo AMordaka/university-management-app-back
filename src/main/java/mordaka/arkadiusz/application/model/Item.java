@@ -35,4 +35,8 @@ public class Item extends DateAudit {
     private Item() {
     }
 
+    public Item(@NotBlank @Size(max = 40) String subjectName, Teacher teacher) {
+        this.subjectName = subjectName;
+        this.teacher = teacher;
+    }
 }

@@ -13,4 +13,6 @@ public interface ItemService {
     List<ItemProfile> getCarriedItems(String username);
 
     ResponseEntity<?> putGrade(Long courseId, CourseInfo courseInfo);
+
+    ResponseEntity<?> addCourse(String courseName, String teacherUsername);
 }

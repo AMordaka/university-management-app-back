@@ -62,4 +62,14 @@ public class ItemServiceImpl implements ItemService {
                 .buildAndExpand(result.getSubjectName()).toUri();
         return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
     }
+
+    @Override
+    public ResponseEntity<?> addCourse(String courseName, String teacherUsername) {
+        Item course = new Item(courseName, userService.findUser(teacherUsername).getTeacher());
+        Item result = itemRepository.save(course);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/users/{username}")
+                .buildAndExpand(result.getSubjectName()).toUri();
+        return ResponseEntity.created(location).body(new ApiResponse(true, "Course created successfully"));
+    }
 }
