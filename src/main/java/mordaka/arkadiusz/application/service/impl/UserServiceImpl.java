@@ -150,4 +150,19 @@ public class UserServiceImpl implements UserService {
                 .buildAndExpand(result.getUsername()).toUri();
         return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
     }
+
+    @Override
+    public ResponseEntity<?> updateUserByAdmin(SignUpRequest signUpRequest) {
+        User user = userRepository.findByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail()).orElseThrow(() -> new AppException("Error"));
+        user.setName(signUpRequest.getName());
+        user.setSurname(signUpRequest.getSurname());
+        user.setUsername(signUpRequest.getUsername());
+        user.setEmail(signUpRequest.getEmail());
+        userRepository.save(user);
+        User result = userRepository.save(user);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/users/{username}")
+                .buildAndExpand(result.getUsername()).toUri();
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
+    }
 }

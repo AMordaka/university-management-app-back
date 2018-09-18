@@ -23,4 +23,6 @@ public interface UserService {
     User findUser(String username);
 
     ResponseEntity<?> updateUser(SignUpRequest signUpRequest);
+
+    ResponseEntity<?> updateUserByAdmin(SignUpRequest signUpRequest);
 }

@@ -33,7 +33,12 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseEntity<?> registerTeacher(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> updateUser(@RequestBody SignUpRequest signUpRequest) {
         return userService.updateUser(signUpRequest);
+    }
+
+    @PostMapping("/updateUserByAdmin")
+    public ResponseEntity<?> updateUserByAdmin(@RequestBody SignUpRequest signUpRequest) {
+        return userService.updateUserByAdmin(signUpRequest);
     }
 }
