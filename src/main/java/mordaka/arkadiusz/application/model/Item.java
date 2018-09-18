@@ -24,7 +24,7 @@ public class Item extends DateAudit {
     @Size(max = 3)
     private String grade;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private Student student;
 
