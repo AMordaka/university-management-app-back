@@ -1,5 +1,6 @@
 package mordaka.arkadiusz.application.controller;
 
+import mordaka.arkadiusz.application.payload.CourseInfo;
 import mordaka.arkadiusz.application.payload.ItemProfile;
 import mordaka.arkadiusz.application.service.ItemService;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class ItemController {
     }
 
     @PostMapping("/{course}/putGrade")
-    public ResponseEntity<?> putGrade(@PathVariable(value = "course") Long courseId, @RequestBody String studentUsername, @RequestBody String teacherUsername, @RequestBody String grade) {
-        return itemService.putGrade(courseId, studentUsername, teacherUsername, grade);
+    public ResponseEntity<?> putGrade(@PathVariable(value = "course") Long courseId, @RequestBody CourseInfo courseInfo) {
+        return itemService.putGrade(courseId, courseInfo);
     }
 
 }

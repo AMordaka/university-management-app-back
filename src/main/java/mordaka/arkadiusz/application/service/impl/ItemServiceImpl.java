@@ -1,10 +1,10 @@
 package mordaka.arkadiusz.application.service.impl;
 
 import mordaka.arkadiusz.application.exception.AppException;
-import mordaka.arkadiusz.application.exception.ResourceNotFoundException;
 import mordaka.arkadiusz.application.model.Item;
 import mordaka.arkadiusz.application.model.User;
 import mordaka.arkadiusz.application.payload.ApiResponse;
+import mordaka.arkadiusz.application.payload.CourseInfo;
 import mordaka.arkadiusz.application.payload.ItemProfile;
 import mordaka.arkadiusz.application.repository.ItemRepository;
 import mordaka.arkadiusz.application.service.ItemService;
@@ -16,7 +16,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -50,18 +49,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ResponseEntity<?> putGrade(Long courseId, String studentUsername, String teacherUsername, String grade) {
+    public ResponseEntity<?> putGrade(Long courseId, CourseInfo courseInfo) {
         Item course = itemRepository.findById(courseId).orElseThrow(() -> new AppException("Course not found!"));
-        User student = userService.findUser(studentUsername);
-        User teacher = userService.findUser(teacherUsername);
+        User student = userService.findUser(courseInfo.getStudentUsername());
+        User teacher = userService.findUser(courseInfo.getTeacherUsername());
         course.setStudent(student.getStudent());
         course.setTeacher(teacher.getTeacher());
-        course.setGrade(grade);
+        course.setGrade(courseInfo.getGrade());
         Item result = itemRepository.save(course);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/api/users/{username}")
                 .buildAndExpand(result.getSubjectName()).toUri();
         return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
-
     }
 }
