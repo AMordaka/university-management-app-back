@@ -21,4 +21,6 @@ public interface UserService {
     ResponseEntity<Void>  deleteUserById(Long id);
 
     User findUser(String username);
+
+    ResponseEntity<?> updateUser(SignUpRequest signUpRequest);
 }

@@ -1,12 +1,10 @@
 package mordaka.arkadiusz.application.controller;
 
+import mordaka.arkadiusz.application.payload.SignUpRequest;
 import mordaka.arkadiusz.application.payload.UserProfile;
 import mordaka.arkadiusz.application.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +30,10 @@ public class UserController {
     @DeleteMapping("user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable(value = "id") Long id) {
         return userService.deleteUserById(id);
+    }
+
+    @PostMapping("/updateUser")
+    public ResponseEntity<?> registerTeacher(@RequestBody SignUpRequest signUpRequest) {
+        return userService.updateUser(signUpRequest);
     }
 }

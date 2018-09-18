@@ -133,4 +133,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
     }
+
+    @Override
+    public ResponseEntity<?> updateUser(SignUpRequest signUpRequest) {
+        User user = userRepository.findByUsernameOrEmail(signUpRequest.getUsername(), signUpRequest.getEmail()).orElseThrow(() -> new AppException("Error"));
+        user.setName(signUpRequest.getName());
+        user.setSurname(signUpRequest.getSurname());
+        user.setStreet(signUpRequest.getStreet());
+        user.setNumberStreet(signUpRequest.getNumberStreet());
+        user.setPostalCode(signUpRequest.getPostalCode());
+        user.setCity(signUpRequest.getCity());
+        userRepository.save(user);
+        User result = userRepository.save(user);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/users/{username}")
+                .buildAndExpand(result.getUsername()).toUri();
+        return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
+    }
 }

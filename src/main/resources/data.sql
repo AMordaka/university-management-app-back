@@ -12,8 +12,8 @@ INSERT INTO USERS(id,created_at,updated_at,city,email,name,number_street,passwor
 INSERT INTO TEACHER(id,user_id) VALUES (null,'3');
 
 INSERT INTO ITEM(id,created_at,updated_at,grade,subject_name,student_id,teacher_id) VALUES (null,'2018-08-03','2018-08-03','4','Informatyka','1','1');
-INSERT INTO ITEM(id,created_at,updated_at,grade,subject_name,student_id,teacher_id) VALUES (null,'2018-08-03','2018-08-03','4','Matematyka','1','1');
-INSERT INTO ITEM(id,created_at,updated_at,grade,subject_name,student_id,teacher_id) VALUES (null,'2018-08-03','2018-08-03',null,'WF','1','2');
+INSERT INTO ITEM(id,created_at,updated_at,grade,subject_name,student_id,teacher_id) VALUES (null,'2018-08-03','2018-08-03',null,'Matematyka','1','1');
+INSERT INTO ITEM(id,created_at,updated_at,grade,subject_name,student_id,teacher_id) VALUES (null,'2018-08-03','2018-08-03',null,'WF','1','1');
 
 INSERT INTO USER_ROLES(user_id,role_id) VALUES('1','3');
 INSERT INTO USER_ROLES(user_id,role_id) VALUES('2','2');
