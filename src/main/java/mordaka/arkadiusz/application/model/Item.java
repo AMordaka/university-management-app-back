@@ -7,6 +7,8 @@ import mordaka.arkadiusz.application.model.audit.DateAudit;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,14 +21,11 @@ public class Item extends DateAudit {
 
     @NotBlank
     @Size(max = 40)
+    @Column(unique = true)
     private String subjectName;
 
-    @Size(max = 3)
-    private String grade;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
+    private Set<ItemStudent> student = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "teacher_id")
@@ -38,5 +37,9 @@ public class Item extends DateAudit {
     public Item(@NotBlank @Size(max = 40) String subjectName, Teacher teacher) {
         this.subjectName = subjectName;
         this.teacher = teacher;
+    }
+
+    public void addItemStudent(ItemStudent itemStudent){
+        student.add(itemStudent);
     }
 }

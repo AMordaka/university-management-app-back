@@ -42,4 +42,9 @@ public class ItemController {
         return itemService.getCarriedItem(courseName, username);
     }
 
+    @PostMapping("/addStudent/{courseId}")
+    public ResponseEntity<?>  getCarriedItem(@PathVariable(value = "courseId") Long courseId, @RequestBody CourseInfo courseInfo) {
+        return itemService.assignStudentToCourse(courseId, courseInfo);
+    }
+
 }

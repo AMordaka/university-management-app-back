@@ -2,6 +2,7 @@ package mordaka.arkadiusz.application.service.impl;
 
 import mordaka.arkadiusz.application.exception.AppException;
 import mordaka.arkadiusz.application.model.Item;
+import mordaka.arkadiusz.application.model.ItemStudent;
 import mordaka.arkadiusz.application.model.User;
 import mordaka.arkadiusz.application.payload.ApiResponse;
 import mordaka.arkadiusz.application.payload.CourseInfo;
@@ -33,8 +34,8 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemProfile> getParticipatesItems(String username) {
         User user = userService.findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
-        for (Item item : user.getStudent().getItems()) {
-            itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getTeacher().getUser().getName() + " " + item.getTeacher().getUser().getSurname(), item.getTeacher().getUser().getUsername()));
+        for (ItemStudent item : user.getStudent().getItems()) {
+            itemProfiles.add(new ItemProfile(item.getItemStudentId(), item.getItem().getSubjectName(), item.getGrade(), item.getItem().getTeacher().getUser().getName() + " " + item.getItem().getTeacher().getUser().getSurname(), item.getItem().getTeacher().getUser().getUsername()));
         }
         return itemProfiles;
     }
@@ -45,9 +46,7 @@ public class ItemServiceImpl implements ItemService {
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getTeacher().getCarriedItems()) {
             if (item.getStudent() != null) {
-                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getUsername()));
-            } else {
-                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), "", ""));
+                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), "", "", ""));
             }
         }
         return itemProfiles;
@@ -57,10 +56,11 @@ public class ItemServiceImpl implements ItemService {
     public ResponseEntity<?> putGrade(Long courseId, CourseInfo courseInfo) {
         Item course = itemRepository.findById(courseId).orElseThrow(() -> new AppException("Course not found!"));
         User student = userService.findUser(courseInfo.getStudentUsername());
-        User teacher = userService.findUser(courseInfo.getTeacherUsername());
-        course.setStudent(student.getStudent());
-        course.setTeacher(teacher.getTeacher());
-        course.setGrade(courseInfo.getGrade());
+        for(ItemStudent itemStudent : course.getStudent()){
+            if(itemStudent.getStudent() == student.getStudent()){
+                itemStudent.setGrade(courseInfo.getGrade());
+            }
+        }
         Item result = itemRepository.save(course);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/api/users/{username}")
@@ -83,12 +83,25 @@ public class ItemServiceImpl implements ItemService {
         User user = userService.findUser(username);
         List<ItemProfile> itemProfiles = new ArrayList<>();
         for (Item item : user.getTeacher().getCarriedItems().stream().filter(item -> courseName.equalsIgnoreCase(item.getSubjectName())).collect(Collectors.toList())) {
-            if (item.getStudent() != null) {
-                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), item.getStudent().getUser().getName() + " " + item.getStudent().getUser().getSurname(), item.getStudent().getUser().getUsername()));
-            } else {
-                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), item.getGrade(), "", ""));
+            for (ItemStudent itemStudent : item.getStudent()) {
+                itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), itemStudent.getGrade(), itemStudent.getStudent().getUser().getName() + " " + itemStudent.getStudent().getUser().getSurname(), itemStudent.getStudent().getUser().getUsername()));
             }
         }
         return itemProfiles;
+    }
+
+    @Override
+    public ResponseEntity<?> assignStudentToCourse(Long courseId, CourseInfo courseInfo) {
+        Item course = itemRepository.findById(courseId).orElseThrow(() -> new AppException("Course not found!"));
+        User user = userService.findUser(courseInfo.getStudentUsername());
+        ItemStudent itemStudent = new ItemStudent();
+        itemStudent.setItem(course);
+        itemStudent.setStudent(user.getStudent());
+        course.getStudent().add(itemStudent);
+        Item result = itemRepository.save(course);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/users/{username}")
+                .buildAndExpand(result.getSubjectName()).toUri();
+        return ResponseEntity.created(location).body(new ApiResponse(true, "Student Assigned successfully"));
     }
 }
