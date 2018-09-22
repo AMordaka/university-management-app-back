@@ -18,5 +18,5 @@ public interface ItemService {
 
     List<ItemProfile> getCarriedItem(String courseName, String username);
 
-    ResponseEntity<?>  assignStudentToCourse(Long courseId, CourseInfo courseInfo);
+    ResponseEntity<?>  assignStudentToCourse(Long courseId, String[] assigned);
 }

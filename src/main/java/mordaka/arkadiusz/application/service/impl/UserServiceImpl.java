@@ -165,4 +165,18 @@ public class UserServiceImpl implements UserService {
                 .buildAndExpand(result.getUsername()).toUri();
         return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
     }
+
+    @Override
+    public List<UserProfile> getAllStudents() {
+        List<UserProfile> userProfiles = new ArrayList<>();
+        Optional<Role> studentRole = roleRepository.findByName(RoleName.ROLE_STUDENT);
+        for (User user : userRepository.findAll()) {
+            for (Role role : user.getRoles()) {
+                if (role.equals(studentRole)) {
+                    userProfiles.add(new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getCreatedAt(), user.getUpdatedAt(), user.getStreet(), user.getNumberStreet(), user.getPostalCode(), user.getCity(), user.getRoles()));
+                }
+            }
+        }
+        return userProfiles;
+    }
 }

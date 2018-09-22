@@ -41,4 +41,9 @@ public class UserController {
     public ResponseEntity<?> updateUserByAdmin(@RequestBody SignUpRequest signUpRequest) {
         return userService.updateUserByAdmin(signUpRequest);
     }
+
+    @GetMapping("/students")
+    public List<UserProfile> getStudents() {
+        return userService.getAllStudents();
+    }
 }

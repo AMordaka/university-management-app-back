@@ -25,4 +25,6 @@ public interface UserService {
     ResponseEntity<?> updateUser(SignUpRequest signUpRequest);
 
     ResponseEntity<?> updateUserByAdmin(SignUpRequest signUpRequest);
+
+    List<UserProfile> getAllStudents();
 }

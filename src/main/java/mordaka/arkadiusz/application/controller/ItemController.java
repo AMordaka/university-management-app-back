@@ -43,8 +43,8 @@ public class ItemController {
     }
 
     @PostMapping("/addStudent/{courseId}")
-    public ResponseEntity<?>  getCarriedItem(@PathVariable(value = "courseId") Long courseId, @RequestBody CourseInfo courseInfo) {
-        return itemService.assignStudentToCourse(courseId, courseInfo);
+    public ResponseEntity<?>  getCarriedItem(@PathVariable(value = "courseId") Long courseId, @RequestBody String[] assigned) {
+        return itemService.assignStudentToCourse(courseId, assigned);
     }
 
 }

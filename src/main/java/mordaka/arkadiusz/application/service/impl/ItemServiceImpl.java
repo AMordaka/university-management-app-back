@@ -91,17 +91,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ResponseEntity<?> assignStudentToCourse(Long courseId, CourseInfo courseInfo) {
+    public ResponseEntity<?> assignStudentToCourse(Long courseId, String[] assigned) {
         Item course = itemRepository.findById(courseId).orElseThrow(() -> new AppException("Course not found!"));
-        User user = userService.findUser(courseInfo.getStudentUsername());
-        ItemStudent itemStudent = new ItemStudent();
-        itemStudent.setItem(course);
-        itemStudent.setStudent(user.getStudent());
-        course.getStudent().add(itemStudent);
-        Item result = itemRepository.save(course);
+        for(int i = 0 ; i < assigned.length; i++){
+            User user = userService.findUser(assigned[i]);
+            ItemStudent itemStudent = new ItemStudent();
+            itemStudent.setItem(course);
+            itemStudent.setStudent(user.getStudent());
+            course.getStudent().add(itemStudent);
+            Item result = itemRepository.save(course);
+        }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getSubjectName()).toUri();
+                .buildAndExpand(course.getSubjectName()).toUri();
         return ResponseEntity.created(location).body(new ApiResponse(true, "Student Assigned successfully"));
     }
 }
