@@ -18,7 +18,7 @@ public interface UserService {
 
     List<UserProfile> getAllUsers();
 
-    ResponseEntity<Void>  deleteUserById(Long id);
+    ResponseEntity<Void> deleteUserById(Long id);
 
     User findUser(String username);
 
@@ -26,5 +26,5 @@ public interface UserService {
 
     ResponseEntity<?> updateUserByAdmin(SignUpRequest signUpRequest);
 
-    List<UserProfile> getAllStudents();
+    List<User> findAllUsers();
 }

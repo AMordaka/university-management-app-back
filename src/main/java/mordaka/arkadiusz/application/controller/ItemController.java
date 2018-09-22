@@ -2,6 +2,7 @@ package mordaka.arkadiusz.application.controller;
 
 import mordaka.arkadiusz.application.payload.CourseInfo;
 import mordaka.arkadiusz.application.payload.ItemProfile;
+import mordaka.arkadiusz.application.payload.UserProfile;
 import mordaka.arkadiusz.application.service.ItemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,9 +43,13 @@ public class ItemController {
         return itemService.getCarriedItem(courseName, username);
     }
 
-    @PostMapping("/addStudent/{courseId}")
-    public ResponseEntity<?>  getCarriedItem(@PathVariable(value = "courseId") Long courseId, @RequestBody String[] assigned) {
-        return itemService.assignStudentToCourse(courseId, assigned);
+    @PostMapping("/addStudents/{courseName}")
+    public ResponseEntity<?>  assignStudents(@PathVariable(value = "courseName") String courseName, @RequestBody List<String> assigned) {
+        return itemService.assignStudentToCourse(courseName, assigned);
     }
 
+    @GetMapping("/students/{courseName}")
+    public List<UserProfile> getStudents(@PathVariable(value = "courseName") String courseName) {
+        return itemService.getAllStudents(courseName);
+    }
 }

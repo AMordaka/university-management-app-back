@@ -24,7 +24,7 @@ public class Item extends DateAudit {
     @Column(unique = true)
     private String subjectName;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL)
     private Set<ItemStudent> student = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

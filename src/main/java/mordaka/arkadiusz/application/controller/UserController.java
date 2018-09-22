@@ -42,8 +42,4 @@ public class UserController {
         return userService.updateUserByAdmin(signUpRequest);
     }
 
-    @GetMapping("/students")
-    public List<UserProfile> getStudents() {
-        return userService.getAllStudents();
-    }
 }
