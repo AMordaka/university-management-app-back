@@ -3,6 +3,7 @@ package mordaka.arkadiusz.application.service;
 import mordaka.arkadiusz.application.model.User;
 import mordaka.arkadiusz.application.payload.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface UserService {
 
     List<UserProfile> getAllUsers();
 
-    ResponseEntity<Void> deleteUserById(Long id);
+    ResponseEntity<?> deleteUserById(Long id);
 
     User findUser(String username);
 
@@ -27,4 +28,8 @@ public interface UserService {
     ResponseEntity<?> updateUserByAdmin(SignUpRequest signUpRequest);
 
     List<User> findAllUsers();
+
+    ResponseEntity<?> addAvatar(String index, MultipartFile file);
+
+    ResponseEntity<?> getAvatar(String username);
 }

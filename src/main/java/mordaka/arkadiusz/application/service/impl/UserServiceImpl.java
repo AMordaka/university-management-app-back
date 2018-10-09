@@ -4,21 +4,25 @@ import mordaka.arkadiusz.application.exception.AppException;
 import mordaka.arkadiusz.application.exception.ResourceNotFoundException;
 import mordaka.arkadiusz.application.model.*;
 import mordaka.arkadiusz.application.payload.*;
+import mordaka.arkadiusz.application.repository.AvatarRepository;
 import mordaka.arkadiusz.application.repository.RoleRepository;
 import mordaka.arkadiusz.application.repository.UserRepository;
 import mordaka.arkadiusz.application.security.JwtTokenProvider;
 import mordaka.arkadiusz.application.service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.multipart.MultipartFile;
+import org.apache.commons.compress.utils.IOUtils;
 
-import java.net.URI;
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,26 +32,29 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final AuthenticationManager authenticationManager;
+    private final AvatarRepository avatarRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
 
-    public UserServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, AvatarRepository avatarRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
+        this.avatarRepository = avatarRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
     }
 
+
     @Override
     public ResponseEntity<?> registerStudent(SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Index is already taken!"));
         }
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Email Address already in use!"));
         }
         Student student = new Student();
         User user = new User(signUpRequest.getName(), signUpRequest.getSurname(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(),
@@ -58,21 +65,17 @@ public class UserServiceImpl implements UserService {
         Role userRole = roleRepository.findByName(RoleName.ROLE_STUDENT)
                 .orElseThrow(() -> new AppException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
-        User result = userRepository.save(user);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        userRepository.save(user);
+        return ResponseEntity.ok().body(new ApiResponse(true, "User registered successfully"));
     }
 
     @Override
     public ResponseEntity<?> registerTeacher(SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Index is already taken!"));
         }
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "Email Address already in use!"));
         }
         Teacher teacher = new Teacher();
         User user = new User(signUpRequest.getName(), signUpRequest.getSurname(), signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword(),
@@ -83,12 +86,8 @@ public class UserServiceImpl implements UserService {
         Role userRole = roleRepository.findByName(RoleName.ROLE_TEACHER)
                 .orElseThrow(() -> new AppException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
-        User result = userRepository.save(user);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        userRepository.save(user);
+        return ResponseEntity.ok().body(new ApiResponse(true, "User registered successfully"));
     }
 
     @Override
@@ -101,9 +100,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUserById(Long id) {
+    public ResponseEntity<?> deleteUserById(Long id) {
         userRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(new ApiResponse(true, "User deleted successfully"));
     }
 
     @Override
@@ -144,11 +143,7 @@ public class UserServiceImpl implements UserService {
         user.setPostalCode(signUpRequest.getPostalCode());
         user.setCity(signUpRequest.getCity());
         userRepository.save(user);
-        User result = userRepository.save(user);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
+        return ResponseEntity.ok().body(new ApiResponse(true, "User updated successfully"));
     }
 
     @Override
@@ -159,16 +154,58 @@ public class UserServiceImpl implements UserService {
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());
         userRepository.save(user);
-        User result = userRepository.save(user);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
+        return ResponseEntity.ok().body(new ApiResponse(true, "User updated successfully"));
     }
 
     @Override
-    public List<User> findAllUsers(){
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
+    public ResponseEntity<?> addAvatar(String index, MultipartFile file) {
+        try {
+            if (file != null) {
+                if (getAvatarFromUser(index) != null) {
+                    avatarRepository.delete(getAvatarFromUser(index));
+                }
+                Avatar avatar = new Avatar();
+                avatar.setUser(findUser(index));
+                avatar.setImage(file.getBytes());
+                avatar.setFileName(file.getName());
+                avatarRepository.save(avatar);
+                return ResponseEntity.ok("Avatar saved successfully");
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No File!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request");
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAvatar(String username) {
+        User user = findUser(username);
+        List<Avatar> list = avatarRepository.findAll();
+        for (Avatar avatar : list) {
+            if (avatar.getUser() == user) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_JPEG);
+                headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+                return new ResponseEntity<>(avatar.getImage(), headers, HttpStatus.OK);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Avatar");
+    }
+
+    private Avatar getAvatarFromUser(String username) {
+        User user = findUser(username);
+        List<Avatar> list = avatarRepository.findAll();
+        for (Avatar avatar : list) {
+            if (avatar.getUser() == user) {
+                return avatar;
+            }
+        }
+        return null;
+    }
 }
