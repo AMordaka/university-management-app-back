@@ -9,6 +9,7 @@ import mordaka.arkadiusz.application.payload.UserProfile;
 import mordaka.arkadiusz.application.repository.ItemRepository;
 import mordaka.arkadiusz.application.repository.RoleRepository;
 import mordaka.arkadiusz.application.service.ItemService;
+import mordaka.arkadiusz.application.service.MailSenderService;
 import mordaka.arkadiusz.application.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,11 +26,13 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final ItemRepository itemRepository;
     private final RoleRepository roleRepository;
+    private final MailSenderService mailSenderService;
 
-    public ItemServiceImpl(UserService userService, ItemRepository itemRepository, RoleRepository roleRepository) {
+    public ItemServiceImpl(UserService userService, ItemRepository itemRepository, RoleRepository roleRepository, MailSenderService mailSenderService) {
         this.userService = userService;
         this.itemRepository = itemRepository;
         this.roleRepository = roleRepository;
+        this.mailSenderService = mailSenderService;
     }
 
     @Override
@@ -61,23 +64,19 @@ public class ItemServiceImpl implements ItemService {
         for (ItemStudent itemStudent : course.getStudent()) {
             if (itemStudent.getStudent() == student.getStudent()) {
                 itemStudent.setGrade(courseInfo.getGrade());
+                //mailSenderService.sendEmail(itemStudent.getStudent().getUser().getEmail(), "Ocena", course.getSubjectName() + " " + courseInfo.getGrade());
             }
         }
-        Item result = itemRepository.save(course);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getSubjectName()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User updated successfully"));
+        itemRepository.save(course);
+
+        return ResponseEntity.ok().body(new ApiResponse(true, "Grade added successfully"));
     }
 
     @Override
     public ResponseEntity<?> addCourse(String courseName, String teacherUsername) {
         Item course = new Item(courseName, userService.findUser(teacherUsername).getTeacher());
-        Item result = itemRepository.save(course);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(result.getSubjectName()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Course created successfully"));
+        itemRepository.save(course);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Course created successfully"));
     }
 
     @Override
@@ -103,10 +102,7 @@ public class ItemServiceImpl implements ItemService {
             course.getStudent().add(itemStudent);
             itemRepository.save(course);
         }
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(course.getSubjectName()).toUri();
-        return ResponseEntity.created(location).body(new ApiResponse(true, "Student Assigned successfully"));
+        return ResponseEntity.ok().body(new ApiResponse(true, "Student Assigned successfully"));
     }
 
     private Item findItemByCourseName(String courseName) {

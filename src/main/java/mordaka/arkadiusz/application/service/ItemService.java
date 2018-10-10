@@ -1,6 +1,5 @@
 package mordaka.arkadiusz.application.service;
 
-import mordaka.arkadiusz.application.model.Item;
 import mordaka.arkadiusz.application.payload.CourseInfo;
 import mordaka.arkadiusz.application.payload.ItemProfile;
 import mordaka.arkadiusz.application.payload.UserProfile;
@@ -20,7 +19,7 @@ public interface ItemService {
 
     List<ItemProfile> getCarriedItem(String courseName, String username);
 
-    ResponseEntity<?>  assignStudentToCourse(String courseName, List<String> assigned);
+    ResponseEntity<?> assignStudentToCourse(String courseName, List<String> assigned);
 
     List<UserProfile> getAllStudents(String courseName);
 }
