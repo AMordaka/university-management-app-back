@@ -5,6 +5,7 @@ import mordaka.arkadiusz.application.exception.ResourceNotFoundException;
 import mordaka.arkadiusz.application.model.*;
 import mordaka.arkadiusz.application.payload.*;
 import mordaka.arkadiusz.application.repository.AvatarRepository;
+import mordaka.arkadiusz.application.repository.PdfRepository;
 import mordaka.arkadiusz.application.repository.RoleRepository;
 import mordaka.arkadiusz.application.repository.UserRepository;
 import mordaka.arkadiusz.application.security.JwtTokenProvider;
@@ -31,18 +32,19 @@ public class UserServiceImpl implements UserService {
     private final AvatarRepository avatarRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PdfRepository pdfRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
 
-    public UserServiceImpl(AuthenticationManager authenticationManager, AvatarRepository avatarRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+    public UserServiceImpl(AuthenticationManager authenticationManager, AvatarRepository avatarRepository, UserRepository userRepository, RoleRepository roleRepository, PdfRepository pdfRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
         this.avatarRepository = avatarRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.pdfRepository = pdfRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
     }
-
 
     @Override
     public ResponseEntity<?> registerStudent(SignUpRequest signUpRequest) {
@@ -193,6 +195,25 @@ public class UserServiceImpl implements UserService {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Avatar");
     }
+
+    @Override
+    public ResponseEntity<?> addPdf(String name, String courseName, MultipartFile file) {
+        if(file != null){
+            try {
+                Pdf pdf = new Pdf();
+                pdf.setContent(file.getBytes());
+                pdf.setFileName(name + "_" + courseName);
+                pdf.setUser(findUser(name));
+                pdfRepository.save(pdf);
+                return ResponseEntity.ok("Pdf added");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No File!");
+    }
+
 
     private Avatar getAvatarFromUser(String username) {
         User user = findUser(username);

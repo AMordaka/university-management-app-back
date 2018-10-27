@@ -5,8 +5,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Blob;
-import java.sql.Timestamp;
 
 @Getter
 @Setter
