@@ -2,9 +2,12 @@ package mordaka.arkadiusz.application.controller;
 
 import mordaka.arkadiusz.application.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/file")
@@ -16,13 +19,18 @@ public class FileController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/addavatar/{username}", method = RequestMethod.POST)
-    public ResponseEntity<?> addAvatar(@PathVariable(value = "username") String username, @RequestPart(name = "file", required = false) MultipartFile file) {
-        return userService.addAvatar(username, file);
+    @RequestMapping(value = "/addavatar", method = RequestMethod.POST)
+    public ResponseEntity<?> addAvatar(Principal principal, @RequestPart(name = "file", required = false) MultipartFile file) {
+        return userService.addAvatar(principal.getName(), file);
     }
 
-    @GetMapping("/getavatar/{username}")
-    public ResponseEntity<?> getAvatar(@PathVariable(value = "username") String username) {
-        return userService.getAvatar(username);
+    @GetMapping("/getavatar")
+    public ResponseEntity<?> getAvatar(Principal principal) {
+        return userService.getAvatar(principal.getName());
+    }
+
+    @RequestMapping(value = "/addPdf/{coursename}", method = RequestMethod.POST)
+    public ResponseEntity<?> addPdf(Principal principal, @PathVariable(value = "coursename") String courseName, @RequestPart(name = "file", required = false) MultipartFile file) {
+        return userService.addPdf(principal.getName(), courseName,file);
     }
 }
