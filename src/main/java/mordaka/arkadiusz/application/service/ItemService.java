@@ -25,4 +25,10 @@ public interface ItemService {
     List<UserProfile> getAllStudents(String courseName);
 
     ResponseEntity<?> addPdf(String name, String courseName, MultipartFile file);
+
+    ResponseEntity<?> getAllPdfs();
+
+    ResponseEntity<?> getPdf(Long id);
+
+    ResponseEntity<?> deletePdf(Long id);
 }

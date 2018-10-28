@@ -3,10 +3,7 @@ package mordaka.arkadiusz.application.service.impl;
 import com.opencsv.CSVReader;
 import mordaka.arkadiusz.application.exception.AppException;
 import mordaka.arkadiusz.application.model.*;
-import mordaka.arkadiusz.application.payload.ApiResponse;
-import mordaka.arkadiusz.application.payload.CourseInfo;
-import mordaka.arkadiusz.application.payload.ItemProfile;
-import mordaka.arkadiusz.application.payload.UserProfile;
+import mordaka.arkadiusz.application.payload.*;
 import mordaka.arkadiusz.application.repository.ItemRepository;
 import mordaka.arkadiusz.application.repository.PdfRepository;
 import mordaka.arkadiusz.application.repository.RoleRepository;
@@ -15,16 +12,14 @@ import mordaka.arkadiusz.application.service.MailSenderService;
 import mordaka.arkadiusz.application.service.UserService;
 import mordaka.arkadiusz.application.util.CSVUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +46,7 @@ public class ItemServiceImpl implements ItemService {
         for (ItemStudent item : user.getStudent().getItems()) {
             itemProfiles.add(new ItemProfile(item.getItemStudentId(), item.getItem().getSubjectName(), item.getGrade(), item.getItem().getTeacher().getUser().getName() + " " + item.getItem().getTeacher().getUser().getSurname(), item.getItem().getTeacher().getUser().getUsername()));
         }
+
         return itemProfiles;
     }
 
@@ -63,6 +59,7 @@ public class ItemServiceImpl implements ItemService {
                 itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), "", "", ""));
             }
         }
+
         return itemProfiles;
     }
 
@@ -85,6 +82,7 @@ public class ItemServiceImpl implements ItemService {
     public ResponseEntity<?> addCourse(String courseName, String teacherUsername) {
         Item course = new Item(courseName, userService.findUser(teacherUsername).getTeacher());
         itemRepository.save(course);
+
         return ResponseEntity.ok().body(new ApiResponse(true, "Course created successfully"));
     }
 
@@ -97,6 +95,7 @@ public class ItemServiceImpl implements ItemService {
                 itemProfiles.add(new ItemProfile(item.getId(), item.getSubjectName(), itemStudent.getGrade(), itemStudent.getStudent().getUser().getName() + " " + itemStudent.getStudent().getUser().getSurname(), itemStudent.getStudent().getUser().getUsername()));
             }
         }
+
         return itemProfiles;
     }
 
@@ -111,6 +110,7 @@ public class ItemServiceImpl implements ItemService {
             course.getStudent().add(itemStudent);
             itemRepository.save(course);
         }
+
         return ResponseEntity.ok().body(new ApiResponse(true, "Student Assigned successfully"));
     }
 
@@ -127,6 +127,7 @@ public class ItemServiceImpl implements ItemService {
         for (User user : students) {
             userProfiles.add(new UserProfile(user.getId(), user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getPassword(), user.getCreatedAt(), user.getUpdatedAt(), user.getStreet(), user.getNumberStreet(), user.getPostalCode(), user.getCity(), user.getRoles()));
         }
+
         return userProfiles;
     }
 
@@ -139,7 +140,31 @@ public class ItemServiceImpl implements ItemService {
 
             return ResponseEntity.ok("Pdf added");
         }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No File!");
+    }
+
+    @Override
+    public ResponseEntity<?> getAllPdfs() {
+        List<Pdf> all = pdfRepository.findAll();
+        List<PdfInfo> list = new ArrayList<>();
+        for (Pdf pdf : all) {
+            list.add(new PdfInfo(pdf.getPdfId(), pdf.getFileName(), pdf.getUser().getUsername()));
+        }
+
+        return ResponseEntity.ok(list);
+    }
+
+    @Override
+    public ResponseEntity<?> getPdf(Long id) {
+        Pdf file = pdfRepository.findById(id).orElseThrow(() -> new AppException("PDF not found!"));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(file.getContent());
+    }
+
+    @Override
+    public ResponseEntity<?> deletePdf(Long id) {
+        pdfRepository.deleteById(id);
+        return ResponseEntity.ok().body(new ApiResponse(true, "Pdf deleted successfully"));
     }
 
     private List<User> getUsersInCourse(String courseName) {
@@ -147,6 +172,7 @@ public class ItemServiceImpl implements ItemService {
         for (ItemStudent itemStudent : findItemByCourseName(courseName).getStudent()) {
             studentsInCourse.add(itemStudent.getStudent().getUser());
         }
+
         return studentsInCourse;
     }
 
@@ -155,7 +181,7 @@ public class ItemServiceImpl implements ItemService {
             User user = userService.findUser(name);
             Pdf pdf = new Pdf();
             pdf.setContent(file.getBytes());
-            pdf.setFileName(name + "_" + courseName);
+            pdf.setFileName(name + "_" + courseName + ".csv");
             pdf.setUser(user);
             pdfRepository.save(pdf);
         } catch (IOException e) {

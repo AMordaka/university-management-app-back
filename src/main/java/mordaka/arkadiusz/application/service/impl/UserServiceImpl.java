@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    void deleteAvatarIfExists(String index) {
+    private void deleteAvatarIfExists(String index) {
         if (getAvatarFromUser(index) != null) {
             avatarRepository.delete(getAvatarFromUser(index));
         }

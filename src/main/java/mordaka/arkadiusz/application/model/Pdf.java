@@ -1,5 +1,6 @@
 package mordaka.arkadiusz.application.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +16,7 @@ public class Pdf {
     @Id
     private Long pdfId;
 
+    @JsonIgnore
     @NotNull
     @ManyToOne
     private User user;

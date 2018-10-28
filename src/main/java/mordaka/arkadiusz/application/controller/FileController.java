@@ -3,7 +3,6 @@ package mordaka.arkadiusz.application.controller;
 import mordaka.arkadiusz.application.service.ItemService;
 import mordaka.arkadiusz.application.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +33,22 @@ public class FileController {
 
     @RequestMapping(value = "/addPdf/{coursename}", method = RequestMethod.POST)
     public ResponseEntity<?> addPdf(Principal principal, @PathVariable(value = "coursename") String courseName, @RequestPart(name = "file", required = false) MultipartFile file) {
-        return itemService.addPdf(principal.getName(), courseName,file);
+        return itemService.addPdf(principal.getName(), courseName, file);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllPdfs() {
+        return itemService.getAllPdfs();
+    }
+
+    @GetMapping("/pdf/{id}")
+    public ResponseEntity<?> getPdf(@PathVariable(value = "id") Long id) {
+        return itemService.getPdf(id);
+    }
+
+    @DeleteMapping("pdf/{id}")
+    public ResponseEntity<?> deletePdf(@PathVariable(value = "id") Long id) {
+        return itemService.deletePdf(id);
     }
 }
+
