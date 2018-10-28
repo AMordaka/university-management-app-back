@@ -33,5 +33,4 @@ public interface UserService {
 
     ResponseEntity<?> getAvatar(String username);
 
-    ResponseEntity<?> addPdf(String name, String courseName, MultipartFile file);
 }

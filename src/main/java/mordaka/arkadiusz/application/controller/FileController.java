@@ -1,5 +1,6 @@
 package mordaka.arkadiusz.application.controller;
 
+import mordaka.arkadiusz.application.service.ItemService;
 import mordaka.arkadiusz.application.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,9 +15,11 @@ import java.security.Principal;
 public class FileController {
 
     private final UserService userService;
+    private final ItemService itemService;
 
-    public FileController(UserService userService) {
+    public FileController(UserService userService, ItemService itemService) {
         this.userService = userService;
+        this.itemService = itemService;
     }
 
     @RequestMapping(value = "/addavatar", method = RequestMethod.POST)
@@ -31,6 +34,6 @@ public class FileController {
 
     @RequestMapping(value = "/addPdf/{coursename}", method = RequestMethod.POST)
     public ResponseEntity<?> addPdf(Principal principal, @PathVariable(value = "coursename") String courseName, @RequestPart(name = "file", required = false) MultipartFile file) {
-        return userService.addPdf(principal.getName(), courseName,file);
+        return itemService.addPdf(principal.getName(), courseName,file);
     }
 }
