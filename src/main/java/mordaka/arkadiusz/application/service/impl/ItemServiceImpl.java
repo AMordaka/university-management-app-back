@@ -18,8 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -167,12 +166,50 @@ public class ItemServiceImpl implements ItemService {
         return ResponseEntity.ok().body(new ApiResponse(true, "Pdf deleted successfully"));
     }
 
+    @Override
+    public List<Integer> getParticipatesItemsGrades(String username) {
+        List<String> grades = new ArrayList<>();
+        for (ItemProfile item : getParticipatesItems(username)) {
+            grades.add(item.getGrade());
+        }
+        return countGrades(grades);
+    }
+
+    private List<String> getCarriedItemsToChart(String username) {
+        User user = userService.findUser(username);
+        List<String> grades = new ArrayList<>();
+        for (Item item : user.getTeacher().getCarriedItems()) {
+            if (item.getStudent() != null) {
+                for(ItemStudent student : item.getStudent()){
+                    grades.add(student.getGrade());
+                }
+            }
+        }
+        return grades;
+    }
+
+    @Override
+    public List<Integer> getCarriedItemsGrades(String username) {
+        return countGrades(getCarriedItemsToChart(username));
+    }
+
+    private List<Integer> countGrades(List<String> grades){
+        return new ArrayList<>(Arrays.asList(
+                Collections.frequency(grades, "2"),
+                Collections.frequency(grades, "3"),
+                Collections.frequency(grades, "3.5"),
+                Collections.frequency(grades, "4"),
+                Collections.frequency(grades, "4.5"),
+                Collections.frequency(grades, "5"),
+                0)
+        );
+    }
+
     private List<User> getUsersInCourse(String courseName) {
         List<User> studentsInCourse = new ArrayList<>();
         for (ItemStudent itemStudent : findItemByCourseName(courseName).getStudent()) {
             studentsInCourse.add(itemStudent.getStudent().getUser());
         }
-
         return studentsInCourse;
     }
 

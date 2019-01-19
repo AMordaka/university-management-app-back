@@ -31,4 +31,8 @@ public interface ItemService {
     ResponseEntity<?> getPdf(Long id);
 
     ResponseEntity<?> deletePdf(Long id);
+
+    List<Integer> getParticipatesItemsGrades(String username);
+
+    List<Integer> getCarriedItemsGrades(String username);
 }

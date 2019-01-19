@@ -52,4 +52,14 @@ public class ItemController {
     public List<UserProfile> getStudents(@PathVariable(value = "courseName") String courseName) {
         return itemService.getAllStudents(courseName);
     }
+
+    @GetMapping("/student/{username}/itemsgrade")
+    public List<Integer> getParticipatesItemGrades(@PathVariable(value = "username") String username) {
+        return itemService.getParticipatesItemsGrades(username);
+    }
+
+    @GetMapping("/teacher/{username}/itemsgrade")
+    public List<Integer> getCarriedItemGrades(@PathVariable(value = "username") String username) {
+        return itemService.getCarriedItemsGrades(username);
+    }
 }

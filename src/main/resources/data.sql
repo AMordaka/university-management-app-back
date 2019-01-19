@@ -21,9 +21,28 @@ INSERT INTO USERS(id,created_at,updated_at,city,email,name,number_street,passwor
 INSERT INTO STUDENT(id,user_id) VALUES (null,'7');
 
 INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'Informatyka', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'Matematyka', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'Chemia', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'Geografia', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'Fizka', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'WF', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'J.Polski', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'J.Angielski', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'J.Niemiecki', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'Historia', '1');
+INSERT INTO ITEM (id, created_at, updated_at, subject_name, teacher_id) VALUES (null, '2018-09-20 17:51:31.811', '2018-09-20 17:51:31.811', 'WOS', '1');
 
 
-INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, null, '1', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '2', '1', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '3', '2', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '3', '3', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '4', '4', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '4', '5', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '5', '6', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '3.5', '7', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '3.5', '8', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '4.5', '9', '1');
+INSERT INTO item_student (item_student_id, grade, item_id, student_id) VALUES (null, '3', '10', '1');
 
 INSERT INTO USER_ROLES(user_id,role_id) VALUES('1','3');
 INSERT INTO USER_ROLES(user_id,role_id) VALUES('4','3');
